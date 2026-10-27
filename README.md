@@ -1,7 +1,8 @@
+# 🌱 WattWise Campus
 
-# WattWise Campus
+**🚀 Live Demo:** [Open WattWise Campus](https://watt-wise-campus.vercel.app/)
 
-A campus energy-awareness platform designed to help students and institutions understand electricity consumption and identify opportunities to save energy.
+A smart campus energy management dashboard that helps users estimate electricity consumption, explore potential savings, and identify appliances with high energy usage. This platform designed to help students and institutions understand electricity consumption and identify opportunities to save energy.
 
 ## Problem Statement
 

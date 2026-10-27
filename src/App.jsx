@@ -1124,6 +1124,57 @@ export default function App() {
                         </div>
 
                         <h3>{item.name}</h3>
+                        <div className="waste-edit-controls">
+                          <label>
+                            Power (W)
+                            <input
+                              type="number"
+                              min="0"
+                              value={item.watts}
+                              onChange={(e) =>
+                                updateAppliance(
+                                  item.id,
+                                  "watts",
+                                  e.target.value,
+                                )
+                              }
+                            />
+                          </label>
+
+                          <label>
+                            Quantity
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.quantity}
+                              onChange={(e) =>
+                                updateAppliance(
+                                  item.id,
+                                  "quantity",
+                                  e.target.value,
+                                )
+                              }
+                            />
+                          </label>
+
+                          <label>
+                            Hours per day
+                            <input
+                              type="number"
+                              min="0"
+                              max="24"
+                              step="0.5"
+                              value={item.hours}
+                              onChange={(e) =>
+                                updateAppliance(
+                                  item.id,
+                                  "hours",
+                                  Math.min(24, Number(e.target.value) || 0),
+                                )
+                              }
+                            />
+                          </label>
+                        </div>
 
                         <div className="waste-metrics">
                           <div>

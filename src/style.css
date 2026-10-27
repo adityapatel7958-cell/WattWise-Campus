@@ -1827,3 +1827,40 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+.waste-edit-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.waste-edit-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #68756c;
+  font-size: 12px;
+}
+
+.waste-edit-controls input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #dce5de;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #203a2b;
+  font: inherit;
+}
+
+.waste-edit-controls input:focus {
+  outline: 2px solid #267653;
+  outline-offset: 1px;
+}
+
+@media (max-width: 480px) {
+  .waste-edit-controls {
+    grid-template-columns: 1fr;
+  }
+}

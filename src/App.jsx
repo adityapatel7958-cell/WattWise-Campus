@@ -19,6 +19,7 @@ const navigation = [
   { id: "appliances", icon: "⚡", label: "Appliance Calculator" },
   { id: "savings", icon: "↗", label: "Savings Simulator" },
   { id: "carbon", icon: "♧", label: "Carbon Footprint" },
+  { id: "waste", icon: "⌕", label: "Energy Waste Detector" },
 ];
 
 const tips = [
@@ -93,6 +94,59 @@ export default function App() {
   const filteredAppliances = appliances.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
+  const wasteAnalysis = useMemo(() => {
+  return appliances
+    .map((item) => {
+      const dailyKwh =
+        (item.watts * item.quantity * item.hours) / 1000;
+
+      // Flag high consumption or long daily usage for review.
+      const needsReview = dailyKwh >= 2 || item.hours >= 8;
+
+      // Model a possible reduction of up to one hour per day.
+      const suggestedHours = needsReview
+        ? Math.min(1, item.hours)
+        : 0;
+
+      const savedKwh =
+        (item.watts * item.quantity * suggestedHours) / 1000;
+
+      let recommendation =
+        "Review this appliance's usage and switch it off when not needed.";
+
+      const name = item.name.toLowerCase();
+
+      if (name.includes("air conditioner") || name.includes("ac")) {
+        recommendation =
+          "Close doors and windows while cooling. Consider reducing runtime by one hour when comfortable.";
+      } else if (name.includes("fan")) {
+        recommendation =
+          "Switch the fan off when leaving the room and use it only when needed.";
+      } else if (
+        name.includes("bulb") ||
+        name.includes("light") ||
+        name.includes("lamp")
+      ) {
+        recommendation =
+          "Turn lights off in empty rooms and consider energy-efficient LED lighting.";
+      } else if (name.includes("laptop") || name.includes("computer")) {
+        recommendation =
+          "Use power-saving settings and shut down the device when it will not be used.";
+      }
+
+      return {
+        ...item,
+        dailyKwh,
+        needsReview,
+        suggestedHours,
+        savedKwh,
+        savedMoney: savedKwh * tariff * days,
+        recommendation,
+      };
+    })
+    .filter((item) => item.needsReview)
+    .sort((a, b) => b.dailyKwh - a.dailyKwh);
+}, [appliances, tariff, days]);
 
   function updateAppliance(id, field, value) {
     setAppliances((current) =>
@@ -189,6 +243,10 @@ export default function App() {
     carbon: [
       "Carbon Footprint",
       "Understand the estimated impact of your electricity use.",
+    ],
+    waste: [
+      "Energy Waste Detector",
+      "Identify high usage and explore practical ways to save energy.",
     ],
   };
 
@@ -1003,7 +1061,133 @@ export default function App() {
               </section>
             </>
           )}
+          {activePage === "waste" && (
+            <>
+              <div className="stats-grid">
+                <StatCard
+                  icon="🔎"
+                  label="Appliances to review"
+                  value={wasteAnalysis.length}
+                  note="Based on usage screening rules"
+                  color="orange"
+                />
 
+                <StatCard
+                  icon="⚡"
+                  label="Total daily consumption"
+                  value={`${number(stats.dailyKwh)} kWh`}
+                  note="Estimated across all appliances"
+                  color="blue"
+                />
+
+                <StatCard
+                  icon="₹"
+                  label="Potential monthly savings"
+                  value={money(
+                    wasteAnalysis.reduce(
+                      (total, item) => total + item.savedMoney,
+                      0,
+                    ),
+                  )}
+                  note="Illustrative usage-reduction scenario"
+                  color="green"
+                />
+
+                <StatCard
+                  icon="✓"
+                  label="Detection method"
+                  value="Rule-based"
+                  note="No live meter or AI connection"
+                  color="purple"
+                />
+              </div>
+
+              <section className="panel page-panel">
+                <PanelHeading
+                  title="Appliances to review"
+                  subtitle="These appliances meet the prototype's high-usage screening rules."
+                  badge="RULE-BASED ANALYSIS"
+                />
+
+                {wasteAnalysis.length === 0 ? (
+                  <EmptyState text="No appliances currently meet the screening rules. This does not guarantee that all energy use is efficient." />
+                ) : (
+                  <div className="waste-list">
+                    {wasteAnalysis.map((item) => (
+                      <article className="waste-card" key={item.id}>
+                        <div className="waste-card-top">
+                          <span className="table-icon large-icon">
+                            {item.icon}
+                          </span>
+
+                          <span className="waste-badge">Review usage</span>
+                        </div>
+
+                        <h3>{item.name}</h3>
+
+                        <div className="waste-metrics">
+                          <div>
+                            <span>Daily consumption</span>
+                            <strong>{number(item.dailyKwh)} kWh</strong>
+                          </div>
+
+                          <div>
+                            <span>Daily runtime</span>
+                            <strong>{number(item.hours)} hours</strong>
+                          </div>
+
+                          <div>
+                            <span>Estimated monthly cost</span>
+                            <strong>
+                              {money(item.dailyKwh * days * tariff)}
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div className="waste-recommendation">
+                          <strong>💡 Suggested action</strong>
+                          <p>{item.recommendation}</p>
+                        </div>
+
+                        {item.suggestedHours > 0 ? (
+                          <div className="waste-savings">
+                            <div>
+                              <span>Illustrative daily savings</span>
+                              <strong>{number(item.savedKwh)} kWh</strong>
+                            </div>
+
+                            <div>
+                              <span>Illustrative monthly savings</span>
+                              <strong>{money(item.savedMoney)}</strong>
+                            </div>
+
+                            <small>
+                              Assumes {number(item.suggestedHours)} fewer
+                              hour(s) of daily use at the entered wattage.
+                              Actual savings depend on real usage and appliance
+                              power consumption.
+                            </small>
+                          </div>
+                        ) : (
+                          <p className="method-note">
+                            Review your usage before deciding whether a change
+                            is appropriate.
+                          </p>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                )}
+
+                <p className="method-note">
+                  Methodology: appliances are flagged when estimated daily
+                  consumption is at least 2 kWh or entered usage is at least 8
+                  hours per day. These thresholds are illustrative. This feature
+                  does not measure actual waste or read live electricity meters.
+                </p>
+              </section>
+            </>
+          )}
           <footer className="page-footer">
             <span>© 2026 WattWise Campus</span>
             <span>Designed for a more energy-conscious campus 🌱</span>

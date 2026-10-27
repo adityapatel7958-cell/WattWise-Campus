@@ -1713,3 +1713,117 @@ button:disabled {
     line-height: 1.6;
   }
 }
+/* Energy Waste Detector */
+
+.waste-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.waste-card {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid #e5ebe6;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.waste-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.waste-badge {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #fff3df;
+  color: #8b5a12;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.waste-card h3 {
+  margin: 16px 0;
+  font-size: 18px;
+}
+
+.waste-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.waste-metrics > div,
+.waste-savings > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.waste-metrics span,
+.waste-savings span {
+  color: #68756c;
+  font-size: 12px;
+}
+
+.waste-metrics strong,
+.waste-savings strong {
+  color: #203a2b;
+  font-size: 16px;
+}
+
+.waste-recommendation {
+  padding: 15px;
+  border-radius: 12px;
+  background: #f0f7f1;
+}
+
+.waste-recommendation > strong {
+  color: #267653;
+  font-size: 13px;
+}
+
+.waste-recommendation p {
+  margin: 8px 0 0;
+  color: #4d5e52;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.waste-savings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e8eee9;
+}
+
+.waste-savings small {
+  grid-column: 1 / -1;
+  color: #68756c;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .waste-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .waste-card {
+    padding: 16px;
+  }
+
+  .waste-metrics,
+  .waste-savings {
+    grid-template-columns: 1fr;
+  }
+}
